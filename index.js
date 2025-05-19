@@ -30,7 +30,20 @@ async function run() {
     await client.connect();
 
 
+const coffeeCollection = client.db('coffeesDB').collection('coffees');
 
+    app.get('/coffees' ,  async(req , res) =>{
+      const cursor = coffeeCollection.find();
+      const result = await  cursor.toArray();
+      res.send(result)
+    })
+
+    app.post('/coffees' , async(req,res)=>{
+      const newCoffee = req.body;
+      console.log(newCoffee)
+      const result = await coffeeCollection.insertOne(newCoffee)
+      res.send(result)
+    })
 
 
 
@@ -45,7 +58,7 @@ async function run() {
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
-    await client.close();
+
   }
 }
 run().catch(console.dir);
